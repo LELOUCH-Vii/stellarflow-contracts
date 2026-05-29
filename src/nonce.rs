@@ -17,7 +17,7 @@ pub fn consume_nonce(env: &Env, coordinator: &Address, incoming_nonce: u64) {
     if incoming_nonce != expected {
         panic!("Invalid nonce: expected {}, got {}", expected, incoming_nonce);
     }
-    env.storage()
-        .persistent()
-        .set(&NonceKey::Nonce(coordinator.clone()), &(expected + 1));
+    let key = NonceKey::Nonce(coordinator.clone());
+    env.storage().persistent().set(&key, &(expected + 1));
+    env.storage().persistent().extend_ttl(&key, 100, 500);
 }
